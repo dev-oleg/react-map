@@ -3,6 +3,7 @@ import './Widget.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import {Form, FormGroup, Input, Label, FormFeedback, Button, ButtonGroup} from 'reactstrap'
 import Empty from './Empty/Empty'
+import Loader from './Loader/Loader'
 
 const Widget = props => {
     return (
@@ -47,6 +48,12 @@ const Widget = props => {
             </Form>
 
             <p>Результаты</p>
+
+            {
+                props.loading ?
+                    <Loader /> :
+                    null
+            }
         </div>
     )
 }

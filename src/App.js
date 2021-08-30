@@ -10,7 +10,8 @@ class App extends Component {
         inputValid: false,
         showErrorMessage: false,
         lastSearch: '',
-        results: null
+        loading: false,
+        results: null,
     }
 
     baseURL = 'https://cors-anywhere.herokuapp.com/https://nominatim.openstreetmaps.org'
@@ -38,7 +39,10 @@ class App extends Component {
 
         if (inputText === lastSearch) return
 
-        this.setState({lastSearch: inputText})
+        this.setState({
+            lastSearch: inputText,
+            loading: true
+        })
 
         try {
             const response = await axios.get(this.baseURL, {
@@ -51,6 +55,7 @@ class App extends Component {
             })
 
             this.setState({
+                loading: false,
                 results: response.data
             })
 
@@ -85,6 +90,7 @@ class App extends Component {
                 <Widget
                     inputText = {this.state.inputText}
                     showErrorMessage = {this.state.showErrorMessage}
+                    loading = {this.state.loading}
                     onChange = {this.changeHandler}
                     onSearch = {this.searchHandler}
                     onClear = {this.clearHandler}
