@@ -12,6 +12,7 @@ class App extends Component {
         lastSearch: '',
         loading: false,
         results: null,
+        cancelTokenSource: null
     }
 
     baseURL = 'https://cors-anywhere.herokuapp.com/https://nominatim.openstreetmaps.org'
@@ -39,9 +40,18 @@ class App extends Component {
 
         if (inputText === lastSearch) return
 
+
+        if (this.state.cancelTokenSource) {
+            this.state.cancelTokenSource.cancel()
+            console.log('aborted')
+        }
+
+        const cancelTokenSource = axios.CancelToken.source()
+
         this.setState({
             lastSearch: inputText,
-            loading: true
+            loading: true,
+            cancelTokenSource
         })
 
         try {
@@ -51,12 +61,14 @@ class App extends Component {
                     polygon_geojson: 1,
                     limit: 10,
                     format: 'json'
-                }
+                },
+                cancelToken: cancelTokenSource.token
             })
 
             this.setState({
                 loading: false,
-                results: response.data
+                results: response.data,
+                cancelTokenSource: null
             })
 
             console.log(response.data)
@@ -68,11 +80,19 @@ class App extends Component {
     clearHandler = event => {
         event.preventDefault()
 
+        if (this.state.cancelTokenSource) {
+            this.state.cancelTokenSource.cancel()
+            console.log('aborted')
+        }
+
         this.setState({
             inputText: '',
             inputValid: false,
             showErrorMessage: false,
-            lastSearch: ''
+            lastSearch: '',
+            loading: false,
+            results: null,
+            cancelTokenSource: null
         })
     }
 
