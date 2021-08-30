@@ -1,0 +1,21 @@
+.ResultList {
+    height: 483px;
+}
+
+.ResultList > ul {
+    overflow-y: scroll;
+    height: 100%;
+}
+
+.ResultList > ul > li {
+    cursor: pointer;
+}
+
+.ResultList > ul > li:hover {
+    background-color: #ccc;
+}
+
+.ResultList > ul > li.active {
+    background-color: #bbb;
+    color: #000;
+}

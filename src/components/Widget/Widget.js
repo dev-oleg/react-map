@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import {Form, FormGroup, Input, Label, FormFeedback, Button, ButtonGroup} from 'reactstrap'
 import Empty from './Empty/Empty'
 import Loader from './Loader/Loader'
+import ResultList from './ResultList/ResultList'
 
 const Widget = props => {
     return (
@@ -52,7 +53,11 @@ const Widget = props => {
             {
                 props.loading ?
                     <Loader /> :
-                    null
+                    <ResultList
+                        results = {props.results}
+                        activeElement = {props.activeElement}
+                        onItemClick = {props.onItemClick}
+                    />
             }
         </div>
     )

@@ -12,6 +12,7 @@ class App extends Component {
         lastSearch: '',
         loading: false,
         results: null,
+        activeElement: null,
         cancelTokenSource: null
     }
 
@@ -51,6 +52,7 @@ class App extends Component {
         this.setState({
             lastSearch: inputText,
             loading: true,
+            activeElement: null,
             cancelTokenSource
         })
 
@@ -70,8 +72,6 @@ class App extends Component {
                 results: response.data,
                 cancelTokenSource: null
             })
-
-            console.log(response.data)
         } catch(error) {
             console.log(error)
         }
@@ -92,6 +92,7 @@ class App extends Component {
             lastSearch: '',
             loading: false,
             results: null,
+            activeElement: null,
             cancelTokenSource: null
         })
     }
@@ -100,6 +101,12 @@ class App extends Component {
         event.preventDefault()
 
         this.searchHandler(event)
+    }
+
+    itemClickHandler = id => {
+        console.log(this.state.results[id])
+        
+        this.setState({activeElement: id})
     }
 
     render() {
@@ -111,10 +118,13 @@ class App extends Component {
                     inputText = {this.state.inputText}
                     showErrorMessage = {this.state.showErrorMessage}
                     loading = {this.state.loading}
+                    results = {this.state.results}
+                    activeElement = {this.state.activeElement}
                     onChange = {this.changeHandler}
                     onSearch = {this.searchHandler}
                     onClear = {this.clearHandler}
                     onSubmit = {this.submitHandler}
+                    onItemClick = {this.itemClickHandler}
                 />
             </div>
         )
