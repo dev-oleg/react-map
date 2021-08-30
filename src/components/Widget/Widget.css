@@ -2,4 +2,14 @@
     width: 400px;
     height: 800px;
     background-color: #fff;
+    padding: 40px 20px;
+}
+
+.Widget > form {
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+.Widget > form > .btn-group {
+    width: 100%;
 }

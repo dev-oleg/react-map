@@ -5,9 +5,40 @@ import Widget from './components/Widget/Widget'
 
 class App extends Component {
     state = {
-        inputText: '',
-        inputValid: false,
-        showErrorMessage: false
+        inputText: ''
+    }
+
+    changeHandler = event => {
+        const inputText = event.target.value.trim()
+
+        this.setState({
+            inputText
+        })
+
+        console.log('change', inputText)
+    }
+
+    searchHandler = event => {
+        event.preventDefault()
+
+        console.log('search', this.state.inputText)
+    }
+
+    clearHandler = event => {
+        event.preventDefault()
+
+        this.setState({
+            inputText: ''
+        })
+
+        console.log('clear')
+    }
+
+    submitHandler = event => {
+        event.preventDefault()
+        console.log('submit')
+
+        this.searchHandler(event)
     }
 
     render() {
@@ -15,7 +46,13 @@ class App extends Component {
             <div className = 'App'>
                 <Map />
 
-                <Widget />
+                <Widget
+                    inputText = {this.state.inputText}
+                    onChange = {this.changeHandler}
+                    onSearch = {this.searchHandler}
+                    onClear = {this.clearHandler}
+                    onSubmit = {this.submitHandler}
+                />
             </div>
         )
     }
