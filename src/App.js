@@ -5,38 +5,51 @@ import Widget from './components/Widget/Widget'
 
 class App extends Component {
     state = {
-        inputText: ''
+        inputText: '',
+        inputValid: false,
+        showErrorMessage: false,
+        lastSearch: ''
     }
 
     changeHandler = event => {
         const inputText = event.target.value.trim()
 
         this.setState({
-            inputText
+            inputText,
+            inputValid: !!inputText,
+            showErrorMessage: false
         })
-
-        console.log('change', inputText)
     }
 
     searchHandler = event => {
         event.preventDefault()
 
-        console.log('search', this.state.inputText)
+        if (!this.state.inputValid) {
+            this.setState({showErrorMessage: true})
+
+            return
+        }
+
+        const {inputText, lastSearch} = this.state
+
+        if (inputText === lastSearch) return
+
+        this.setState({lastSearch: inputText})
     }
 
     clearHandler = event => {
         event.preventDefault()
 
         this.setState({
-            inputText: ''
+            inputText: '',
+            inputValid: false,
+            showErrorMessage: false,
+            lastSearch: ''
         })
-
-        console.log('clear')
     }
 
     submitHandler = event => {
         event.preventDefault()
-        console.log('submit')
 
         this.searchHandler(event)
     }
@@ -48,6 +61,7 @@ class App extends Component {
 
                 <Widget
                     inputText = {this.state.inputText}
+                    showErrorMessage = {this.state.showErrorMessage}
                     onChange = {this.changeHandler}
                     onSearch = {this.searchHandler}
                     onClear = {this.clearHandler}
