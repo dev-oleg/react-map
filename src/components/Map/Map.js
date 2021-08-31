@@ -64,8 +64,6 @@ class Map extends Component {
     }
 
     render() {
-        console.log('map render', this.props)
-
         return (
             <div id = 'map'></div>
         )
