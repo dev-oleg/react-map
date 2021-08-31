@@ -5,6 +5,8 @@ import 'leaflet/dist/leaflet.css'
 import {config} from './map.config'
 import {clearLayers, addLayer, setView, autoZoom} from './map.functions'
 
+L.Icon.Default.imagePath = 'assets/'
+
 class Map extends Component {
     state = {
         map: null,
