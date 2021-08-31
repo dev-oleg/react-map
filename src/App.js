@@ -104,22 +104,38 @@ class App extends Component {
     }
 
     itemClickHandler = id => {
-        console.log(this.state.results[id])
+        // console.log(this.state.results[id])
         
         this.setState({activeElement: id})
     }
 
     render() {
+        const {
+            inputText, 
+            showErrorMessage,
+            loading,
+            results, 
+            activeElement
+        } = this.state
+
+        let mapData = null
+
+        if (activeElement || activeElement === 0) {
+            mapData = results[activeElement]
+        }
+
         return (
             <div className = 'App'>
-                <Map />
+                <Map 
+                    data = {mapData}
+                />
 
                 <Widget
-                    inputText = {this.state.inputText}
-                    showErrorMessage = {this.state.showErrorMessage}
-                    loading = {this.state.loading}
-                    results = {this.state.results}
-                    activeElement = {this.state.activeElement}
+                    inputText = {inputText}
+                    showErrorMessage = {showErrorMessage}
+                    loading = {loading}
+                    results = {results}
+                    activeElement = {activeElement}
                     onChange = {this.changeHandler}
                     onSearch = {this.searchHandler}
                     onClear = {this.clearHandler}
