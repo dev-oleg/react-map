@@ -19,11 +19,11 @@ class App extends Component {
     baseURL = 'https://cors-anywhere.herokuapp.com/https://nominatim.openstreetmaps.org'
 
     changeHandler = event => {
-        const inputText = event.target.value.trim()
+        const inputText = event.target.value
 
         this.setState({
             inputText,
-            inputValid: !!inputText,
+            inputValid: !!inputText.trim(),
             showErrorMessage: false
         })
     }
