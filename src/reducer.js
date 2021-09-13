@@ -1,7 +1,9 @@
 import {
     CREATE_REQUEST_DATA,
     FETCH_DATA_SUCCESS,
-    FETCH_DATA_ERROR
+    FETCH_DATA_ERROR,
+    SET_MAP,
+    CLEAR_STATE
 } from './actionTypes'
 
 const initialState = {
@@ -35,6 +37,20 @@ export default function(state = initialState, action) {
                 loading: false,
                 cancelTokenSource: null,
                 error: action.payload
+            }
+        case SET_MAP:
+            return {
+                ...state,
+                activeElement: action.payload
+            }
+        case CLEAR_STATE:
+            return {
+                ...state,
+                lastSearch: '',
+                loading: false,
+                results: null,
+                activeElement: null,
+                cancelTokenSource: null
             }
         default:
             return state

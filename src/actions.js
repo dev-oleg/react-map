@@ -1,7 +1,9 @@
 import {
     CREATE_REQUEST_DATA,
     FETCH_DATA_SUCCESS,
-    FETCH_DATA_ERROR
+    FETCH_DATA_ERROR,
+    SET_MAP,
+    CLEAR_STATE
 } from './actionTypes'
 
 import axios from 'axios'
@@ -38,16 +40,29 @@ export function createRequestData(inputText, cancelTokenSource) {
     }
 }
 
-function fetchDataSuccess(data) {
+export function fetchDataSuccess(data) {
     return {
         type: FETCH_DATA_SUCCESS,
         payload: data
     }
 }
 
-function fetchDataError(error) {
+export function fetchDataError(error) {
     return {
         type: FETCH_DATA_ERROR,
         payload: error
+    }
+}
+
+export function setMap(id) {
+    return {
+        type: SET_MAP,
+        payload: id
+    }
+}
+
+export function clearState() {
+    return {
+        type: CLEAR_STATE
     }
 }

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {nominatimRequest} from './actions'
+import {nominatimRequest, setMap, clearState} from './actions'
 import './App.css'
 import Map from './components/Map/Map'
 import Widget from './components/Widget/Widget'
@@ -43,63 +43,29 @@ class App extends Component {
         const cancelTokenSource = axios.CancelToken.source()
 
         this.props.nominatimRequest(inputText, cancelTokenSource)
-
-        // this.setState({
-        //     lastSearch: inputText,
-        //     loading: true,
-        //     activeElement: null,
-        //     cancelTokenSource
-        // })
-
-        // try {
-        //     const response = await axios.get(this.baseURL, {
-        //         params: {
-        //             q: inputText,
-        //             polygon_geojson: 1,
-        //             limit: 10,
-        //             format: 'json'
-        //         },
-        //         cancelToken: cancelTokenSource.token
-        //     })
-
-        //     this.setState({
-        //         loading: false,
-        //         results: response.data,
-        //         cancelTokenSource: null
-        //     })
-        // } catch(error) {
-        //     console.log(error)
-        // }
     }
 
     clearHandler = event => {
-        // event.preventDefault()
+        event.preventDefault()
 
-        // if (this.state.cancelTokenSource) {
-        //     this.state.cancelTokenSource.cancel()
-        //     console.log('aborted')
-        // }
+        if (this.props.cancelTokenSource) {
+            this.props.cancelTokenSource.cancel()
+            console.log('aborted')
+        }
 
-        // this.setState({
-        //     inputText: '',
-        //     inputValid: false,
-        //     showErrorMessage: false,
-        //     lastSearch: '',
-        //     loading: false,
-        //     results: null,
-        //     activeElement: null,
-        //     cancelTokenSource: null
-        // })
+        this.setState({
+            inputText: '',
+            inputValid: false,
+            showErrorMessage: false
+        })
+
+        this.props.clearState()
     }
 
     submitHandler = event => {
         event.preventDefault()
 
         this.searchHandler(event)
-    }
-
-    itemClickHandler = id => {
-        // this.setState({activeElement: id})
     }
 
     render() {
@@ -128,7 +94,7 @@ class App extends Component {
                     onSearch = {this.searchHandler}
                     onClear = {this.clearHandler}
                     onSubmit = {this.submitHandler}
-                    onItemClick = {this.itemClickHandler}
+                    onItemClick = {this.props.itemClickHandler}
                 />
             </div>
         )
@@ -147,7 +113,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        nominatimRequest: (inputText, cancelTokenSource) => dispatch(nominatimRequest(inputText, cancelTokenSource))
+        nominatimRequest: (inputText, cancelTokenSource) => dispatch(nominatimRequest(inputText, cancelTokenSource)),
+        itemClickHandler: id => dispatch(setMap(id)),
+        clearState: () => dispatch(clearState())
     }
 }
 
