@@ -1,9 +1,9 @@
 import {
-    CREATE_REQUEST_DATA,
-    FETCH_DATA_SUCCESS,
-    FETCH_DATA_ERROR,
-    SET_MAP,
-    CLEAR_STATE
+    FETCH_START,
+    FETCH_FINISH,
+    SET_MAP_ELEMENT,
+    CLEAR_STATE,
+    SET_MAP
 } from './actionTypes'
 
 const initialState = {
@@ -11,12 +11,14 @@ const initialState = {
     loading: false,
     results: null,
     activeElement: null,
-    cancelTokenSource: null
+    cancelTokenSource: null,
+    map: null,
+    tileLayer: null
 }
 
 export default function(state = initialState, action) {
     switch (action.type) {
-        case CREATE_REQUEST_DATA:
+        case FETCH_START:
             return {
                 ...state,
                 lastSearch: action.payload,
@@ -24,21 +26,14 @@ export default function(state = initialState, action) {
                 activeElement: null,
                 cancelTokenSource: action.token
             }
-        case FETCH_DATA_SUCCESS:
+        case FETCH_FINISH:
             return {
                 ...state,
                 loading: false,
                 cancelTokenSource: null,
                 results: action.payload
             }
-        case FETCH_DATA_ERROR:
-            return {
-                ...state,
-                loading: false,
-                cancelTokenSource: null,
-                error: action.payload
-            }
-        case SET_MAP:
+        case SET_MAP_ELEMENT:
             return {
                 ...state,
                 activeElement: action.payload
@@ -51,6 +46,12 @@ export default function(state = initialState, action) {
                 results: null,
                 activeElement: null,
                 cancelTokenSource: null
+            }
+        case SET_MAP:
+            return {
+                ...state,
+                map: action.map,
+                tileLayer: action.tileLayer
             }
         default:
             return state

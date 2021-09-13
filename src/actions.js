@@ -1,62 +1,55 @@
 import {
-    CREATE_REQUEST_DATA,
-    FETCH_DATA_SUCCESS,
-    FETCH_DATA_ERROR,
-    SET_MAP,
-    CLEAR_STATE
+    FETCH_START,
+    FETCH_FINISH,
+    SET_MAP_ELEMENT,
+    CLEAR_STATE,
+    SET_MAP
 } from './actionTypes'
 
 import axios from 'axios'
 
 const baseURL = 'https://cors-anywhere.herokuapp.com/https://nominatim.openstreetmaps.org'
 
-export function nominatimRequest(inputText, cancelTokenSource) {
+export function getMapData(value, token) {
     return async dispatch => {
-        dispatch(createRequestData(inputText, cancelTokenSource))
+        dispatch(fetchStart(value, token))
 
         try {
             const response = await axios.get(baseURL, {
                 params: {
-                    q: inputText,
+                    q: value,
                     polygon_geojson: 1,
-                    limit: 10,
+                    limit: 30,
                     format: 'json'
                 },
-                cancelToken: cancelTokenSource.token
+                cancelToken: token.token
             })
 
-            dispatch(fetchDataSuccess(response.data))
+            dispatch(fetchFinish(response.data))
         } catch(error) {
-            dispatch(fetchDataError(error))
+            dispatch(fetchFinish(error))
         }
     }
 }
 
-export function createRequestData(inputText, cancelTokenSource) {
+export function fetchStart(value, token) {
     return {
-        type: CREATE_REQUEST_DATA,
-        payload: inputText,
-        token: cancelTokenSource
+        type: FETCH_START,
+        payload: value,
+        token
     }
 }
 
-export function fetchDataSuccess(data) {
+export function fetchFinish(data) {
     return {
-        type: FETCH_DATA_SUCCESS,
+        type: FETCH_FINISH,
         payload: data
     }
 }
 
-export function fetchDataError(error) {
+export function setMapElement(id) {
     return {
-        type: FETCH_DATA_ERROR,
-        payload: error
-    }
-}
-
-export function setMap(id) {
-    return {
-        type: SET_MAP,
+        type: SET_MAP_ELEMENT,
         payload: id
     }
 }
@@ -64,5 +57,13 @@ export function setMap(id) {
 export function clearState() {
     return {
         type: CLEAR_STATE
+    }
+}
+
+export function setMap(map, tileLayer) {
+    return {
+        type: SET_MAP,
+        map,
+        tileLayer
     }
 }

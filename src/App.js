@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {nominatimRequest, setMap, clearState} from './actions'
+import {getMapData, setMapElement, clearState} from './actions'
 import './App.css'
 import Map from './components/Map/Map'
 import Widget from './components/Widget/Widget'
@@ -42,7 +42,7 @@ class App extends Component {
 
         const cancelTokenSource = axios.CancelToken.source()
 
-        this.props.nominatimRequest(inputText, cancelTokenSource)
+        this.props.nominatim(inputText, cancelTokenSource)
     }
 
     clearHandler = event => {
@@ -113,8 +113,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        nominatimRequest: (inputText, cancelTokenSource) => dispatch(nominatimRequest(inputText, cancelTokenSource)),
-        itemClickHandler: id => dispatch(setMap(id)),
+        nominatim: (value, token) => dispatch(getMapData(value, token)),
+        itemClickHandler: id => dispatch(setMapElement(id)),
         clearState: () => dispatch(clearState())
     }
 }

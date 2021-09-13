@@ -1,7 +1,8 @@
-export const CREATE_REQUEST_DATA = 'CREATE_REQUEST_DATA'
-export const FETCH_DATA_SUCCESS = 'FETCH_DATA_SUCCESS'
-export const FETCH_DATA_ERROR = 'FETCH_DATA_ERROR'
+export const FETCH_START = 'FETCH_START'
+export const FETCH_FINISH = 'FETCH_FINISH'
 
-export const SET_MAP = 'SET_MAP'
+export const SET_MAP_ELEMENT = 'SET_MAP_ELEMENT'
 
 export const CLEAR_STATE = 'CLEAR_STATE'
+
+export const SET_MAP = 'SET_MAP'
