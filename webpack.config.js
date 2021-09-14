@@ -27,7 +27,7 @@ module.exports = {
             patterns: [
                 {
                     from: 'node_modules/leaflet/dist/images',
-                    to: 'dist/assets'
+                    to: 'assets'
                 }
             ]
         })
