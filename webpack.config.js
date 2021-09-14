@@ -24,10 +24,12 @@ module.exports = {
             template: './src/index.html'
         }),
         new CopyWebpackPlugin({
-            patterns: {
-                from: 'node_modules/leaflet/dist/images',
-                to: 'dist/assets'
-            }
+            patterns: [
+                {
+                    from: 'node_modules/leaflet/dist/images',
+                    to: 'dist/assets'
+                }
+            ]
         })
     ],
     module: {
