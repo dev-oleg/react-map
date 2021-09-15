@@ -1,4 +1,9 @@
-import {FETCH_NOMINATIM_START, FETCH_NOMINATIM_FINISH} from './actionTypes'
+import {
+    FETCH_NOMINATIM_START,
+    FETCH_NOMINATIM_FINISH,
+    CLEAR,
+    RES
+} from './actionTypes'
 
 import axios from 'axios'
 
@@ -19,9 +24,10 @@ export function fetchNominatim(text, token) {
                 cancelToken: token.token
             })
 
-            dispatch(fetchNominatimFinish(response.data))
+            dispatch(fetchNominatimFinish(response.data, null))
         } catch(error) {
-            dispatch(fetchNominatimFinish(error))
+            console.log(error)
+            dispatch(fetchNominatimFinish(null, error))
         }
     }
 }
@@ -34,9 +40,15 @@ export function fetchNominatimStart(text, token) {
     }
 }
 
-export function fetchNominatimFinish(data) {
+export function fetchNominatimFinish(data, error) {
     return {
         type: FETCH_NOMINATIM_FINISH,
         payload: data
+    }
+}
+
+export function clear() {
+    return {
+        type: CLEAR
     }
 }

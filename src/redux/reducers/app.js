@@ -1,4 +1,8 @@
-import {FETCH_NOMINATIM_START, FETCH_NOMINATIM_FINISH} from '../actions/actionTypes'
+import {
+    FETCH_NOMINATIM_START,
+    FETCH_NOMINATIM_FINISH,
+    CLEAR
+} from '../actions/actionTypes'
 
 const initialState = {
     lastSearch: '',
@@ -23,6 +27,15 @@ export default function(state = initialState, action) {
                 ...state,
                 loading: false,
                 results: action.payload,
+                cancelTokenSource: null
+            }
+        case CLEAR:
+            return {
+                ...state,
+                lastSearch: '',
+                loading: false,
+                results: null,
+                activeElement: null,
                 cancelTokenSource: null
             }
         default:

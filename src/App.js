@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {fetchNominatim} from './redux/actions/app'
+import {fetchNominatim, clear} from './redux/actions/app'
 import './App.css'
 import Map from './components/Map/Map'
 import Widget from './components/Widget/Widget'
@@ -50,21 +50,18 @@ class App extends Component {
     clearHandler = event => {
         event.preventDefault()
 
-        // if (this.state.cancelTokenSource) {
-        //     this.state.cancelTokenSource.cancel()
-        //     console.log('aborted')
-        // }
+        if (this.props.cancelTokenSource) {
+            this.props.cancelTokenSource.cancel()
+            console.log('aborted')
+        }
 
-        // this.setState({
-        //     inputText: '',
-        //     inputValid: false,
-        //     showErrorMessage: false,
-        //     lastSearch: '',
-        //     loading: false,
-        //     results: null,
-        //     activeElement: null,
-        //     cancelTokenSource: null
-        // })
+        this.setState({
+            inputText: '',
+            inputValid: false,
+            showErrorMessage: false,
+        })
+
+        this.props.clear()
     }
 
     submitHandler = event => {
@@ -124,7 +121,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        nominatim: (text, token) => dispatch(fetchNominatim(text, token))
+        nominatim: (text, token) => dispatch(fetchNominatim(text, token)),
+        clear: () => dispatch(clear())
     }
 }
 
