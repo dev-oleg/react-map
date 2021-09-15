@@ -5,7 +5,7 @@ import {Provider} from 'react-redux'
 import thunk from 'redux-thunk'
 import './index.css'
 import App from './App'
-import rootReducer from './redux/rootReducer'
+import rootReducer from './redux/reducers/rootReducer'
 
 const composeEnhancers =
     typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?

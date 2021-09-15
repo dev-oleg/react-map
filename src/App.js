@@ -1,4 +1,6 @@
 import React, {Component} from 'react'
+import {connect} from 'react-redux'
+import {fetchNominatim} from './redux/actions/app'
 import './App.css'
 import Map from './components/Map/Map'
 import Widget from './components/Widget/Widget'
@@ -8,15 +10,8 @@ class App extends Component {
     state = {
         inputText: '',
         inputValid: false,
-        showErrorMessage: false,
-        lastSearch: '',
-        loading: false,
-        results: null,
-        activeElement: null,
-        cancelTokenSource: null
+        showErrorMessage: false
     }
-
-    baseURL = 'https://cors-anywhere.herokuapp.com/https://nominatim.openstreetmaps.org'
 
     changeHandler = event => {
         const inputText = event.target.value
@@ -37,64 +32,39 @@ class App extends Component {
             return
         }
 
-        const {inputText, lastSearch} = this.state
-
+        const {inputText} = this.state
+        const {lastSearch} = this.props
         if (inputText === lastSearch) return
 
 
-        if (this.state.cancelTokenSource) {
-            this.state.cancelTokenSource.cancel()
+        if (this.props.cancelTokenSource) {
+            this.props.cancelTokenSource.cancel()
             console.log('aborted')
         }
 
         const cancelTokenSource = axios.CancelToken.source()
 
-        this.setState({
-            lastSearch: inputText,
-            loading: true,
-            activeElement: null,
-            cancelTokenSource
-        })
-
-        try {
-            const response = await axios.get(this.baseURL, {
-                params: {
-                    q: inputText,
-                    polygon_geojson: 1,
-                    limit: 10,
-                    format: 'json'
-                },
-                cancelToken: cancelTokenSource.token
-            })
-
-            this.setState({
-                loading: false,
-                results: response.data,
-                cancelTokenSource: null
-            })
-        } catch(error) {
-            console.log(error)
-        }
+        this.props.nominatim(inputText, cancelTokenSource)
     }
 
     clearHandler = event => {
         event.preventDefault()
 
-        if (this.state.cancelTokenSource) {
-            this.state.cancelTokenSource.cancel()
-            console.log('aborted')
-        }
+        // if (this.state.cancelTokenSource) {
+        //     this.state.cancelTokenSource.cancel()
+        //     console.log('aborted')
+        // }
 
-        this.setState({
-            inputText: '',
-            inputValid: false,
-            showErrorMessage: false,
-            lastSearch: '',
-            loading: false,
-            results: null,
-            activeElement: null,
-            cancelTokenSource: null
-        })
+        // this.setState({
+        //     inputText: '',
+        //     inputValid: false,
+        //     showErrorMessage: false,
+        //     lastSearch: '',
+        //     loading: false,
+        //     results: null,
+        //     activeElement: null,
+        //     cancelTokenSource: null
+        // })
     }
 
     submitHandler = event => {
@@ -106,17 +76,12 @@ class App extends Component {
     itemClickHandler = id => {
         // console.log(this.state.results[id])
         
-        this.setState({activeElement: id})
+        // this.setState({activeElement: id})
     }
 
     render() {
-        const {
-            inputText, 
-            showErrorMessage,
-            loading,
-            results, 
-            activeElement
-        } = this.state
+        const {inputText, showErrorMessage} = this.state
+        const {loading, results, activeElement} = this.props
 
         let mapData = null
 
@@ -147,4 +112,20 @@ class App extends Component {
     }
 }
 
-export default App
+function mapStateToProps(state) {
+    return {
+        lastSearch: state.app.lastSearch,
+        loading: state.app.loading,
+        results: state.app.results,
+        activeElement: state.app.activeElement,
+        cancelTokenSource: state.app.cancelTokenSource
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        nominatim: (text, token) => dispatch(fetchNominatim(text, token))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
