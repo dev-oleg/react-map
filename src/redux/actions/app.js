@@ -2,7 +2,7 @@ import {
     FETCH_NOMINATIM_START,
     FETCH_NOMINATIM_FINISH,
     CLEAR,
-    RES
+    ACTIVE_ELEMENT
 } from './actionTypes'
 
 import axios from 'axios'
@@ -50,5 +50,12 @@ export function fetchNominatimFinish(data, error) {
 export function clear() {
     return {
         type: CLEAR
+    }
+}
+
+export function setActiveElement(id) {
+    return {
+        type: ACTIVE_ELEMENT,
+        payload: id
     }
 }

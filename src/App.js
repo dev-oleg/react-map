@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {fetchNominatim, clear} from './redux/actions/app'
+import {fetchNominatim, clear, setActiveElement} from './redux/actions/app'
 import './App.css'
 import Map from './components/Map/Map'
 import Widget from './components/Widget/Widget'
@@ -73,7 +73,7 @@ class App extends Component {
     itemClickHandler = id => {
         // console.log(this.state.results[id])
         
-        // this.setState({activeElement: id})
+        this.props.setActiveElement(id)
     }
 
     render() {
@@ -122,7 +122,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         nominatim: (text, token) => dispatch(fetchNominatim(text, token)),
-        clear: () => dispatch(clear())
+        clear: () => dispatch(clear()),
+        setActiveElement: id => dispatch(setActiveElement(id))
     }
 }
 

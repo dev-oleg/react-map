@@ -1,7 +1,8 @@
 import {
     FETCH_NOMINATIM_START,
     FETCH_NOMINATIM_FINISH,
-    CLEAR
+    CLEAR,
+    ACTIVE_ELEMENT
 } from '../actions/actionTypes'
 
 const initialState = {
@@ -37,6 +38,11 @@ export default function(state = initialState, action) {
                 results: null,
                 activeElement: null,
                 cancelTokenSource: null
+            }
+        case ACTIVE_ELEMENT:
+            return {
+                ...state,
+                activeElement: action.payload
             }
         default:
             return state
