@@ -1,4 +1,6 @@
 import React, {Component} from 'react'
+import {connect} from 'react-redux'
+import {setMap} from '../../redux/actions/map'
 import './Map.css'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -8,18 +10,13 @@ import {clearLayers, addLayer, setView, autoZoom} from './map.functions'
 L.Icon.Default.imagePath = 'assets/'
 
 class Map extends Component {
-    state = {
-        map: null,
-        tileLayer: null
-    }
-
     componentDidMount() {
-        if (this.state.map) return
+        if (this.props.map) return
 
         const map = L.map(config.id, config.params)
         const tileLayer = L.tileLayer(config.tileLayer.uri).addTo(map)
 
-        this.setState({map, tileLayer})
+        this.props.setMap({map, tileLayer})
     }
 
     shouldComponentUpdate(nextProps) {
@@ -35,7 +32,7 @@ class Map extends Component {
     }
     
     componentDidUpdate() {
-        const {map, tileLayer} = this.state
+        const {map, tileLayer} = this.props
 
         clearLayers(map, tileLayer)
 
@@ -70,4 +67,17 @@ class Map extends Component {
     }
 }
 
-export default Map
+function mapStateToProps(state) {
+    return {
+        map: state.map.map,
+        tileLayer: state.map.tileLayer
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        setMap: (map, tileLayer) => dispatch(setMap(map, tileLayer))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Map)
