@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {getMapData, setMapElement, clearState} from './actions'
+import {fetchNominatim, clear, setActiveElement} from './redux/actions/app'
 import './App.css'
 import Map from './components/Map/Map'
 import Widget from './components/Widget/Widget'
@@ -23,17 +23,19 @@ class App extends Component {
         })
     }
 
-    searchHandler = event => {
+    searchHandler = async event => {
         event.preventDefault()
-        
+
         if (!this.state.inputValid) {
             this.setState({showErrorMessage: true})
+
             return
         }
 
         const {inputText} = this.state
         const {lastSearch} = this.props
         if (inputText === lastSearch) return
+
 
         if (this.props.cancelTokenSource) {
             this.props.cancelTokenSource.cancel()
@@ -56,16 +58,22 @@ class App extends Component {
         this.setState({
             inputText: '',
             inputValid: false,
-            showErrorMessage: false
+            showErrorMessage: false,
         })
 
-        this.props.clearState()
+        this.props.clear()
     }
 
     submitHandler = event => {
         event.preventDefault()
 
         this.searchHandler(event)
+    }
+
+    itemClickHandler = id => {
+        // console.log(this.state.results[id])
+        
+        this.props.setActiveElement(id)
     }
 
     render() {
@@ -94,7 +102,7 @@ class App extends Component {
                     onSearch = {this.searchHandler}
                     onClear = {this.clearHandler}
                     onSubmit = {this.submitHandler}
-                    onItemClick = {this.props.itemClickHandler}
+                    onItemClick = {this.itemClickHandler}
                 />
             </div>
         )
@@ -103,19 +111,19 @@ class App extends Component {
 
 function mapStateToProps(state) {
     return {
-        lastSearch: state.lastSearch,
-        loading: state.loading,
-        results: state.results,
-        activeElement: state.activeElement,
-        cancelTokenSource: state.cancelTokenSource
+        lastSearch: state.app.lastSearch,
+        loading: state.app.loading,
+        results: state.app.results,
+        activeElement: state.app.activeElement,
+        cancelTokenSource: state.app.cancelTokenSource
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        nominatim: (value, token) => dispatch(getMapData(value, token)),
-        itemClickHandler: id => dispatch(setMapElement(id)),
-        clearState: () => dispatch(clearState())
+        nominatim: (text, token) => dispatch(fetchNominatim(text, token)),
+        clear: () => dispatch(clear()),
+        setActiveElement: id => dispatch(setActiveElement(id))
     }
 }
 

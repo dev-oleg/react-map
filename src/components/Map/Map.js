@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {setMap} from '../../actions'
+import {setMap} from '../../redux/actions/map'
 import './Map.css'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -16,7 +16,7 @@ class Map extends Component {
         const map = L.map(config.id, config.params)
         const tileLayer = L.tileLayer(config.tileLayer.uri).addTo(map)
 
-        this.props.setMap(map, tileLayer)
+        this.props.setMap({map, tileLayer})
     }
 
     shouldComponentUpdate(nextProps) {
@@ -69,8 +69,8 @@ class Map extends Component {
 
 function mapStateToProps(state) {
     return {
-        map: state.map,
-        tileLayer: state.tileLayer
+        map: state.map.map,
+        tileLayer: state.map.tileLayer
     }
 }
 

@@ -1,0 +1,8 @@
+export const FETCH_NOMINATIM_START = 'FETCH_NOMINATIM_START'
+export const FETCH_NOMINATIM_FINISH = 'FETCH_NOMINATIM_FINISH'
+
+export const CLEAR = 'CLEAR'
+
+export const ACTIVE_ELEMENT = 'ACTIVE_ELEMENT'
+
+export const SET_MAP = 'SET_MAP'
