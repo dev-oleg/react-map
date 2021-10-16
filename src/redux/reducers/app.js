@@ -42,7 +42,8 @@ export default function(state = initialState, action) {
         case ACTIVE_ELEMENT:
             return {
                 ...state,
-                activeElement: action.payload
+                // activeElement: action.payload
+                activeElement: state.activeElement === action.payload ? null : action.payload
             }
         default:
             return state
