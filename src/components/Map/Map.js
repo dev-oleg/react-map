@@ -68,9 +68,12 @@ class Map extends Component {
 }
 
 function mapStateToProps(state) {
+    const data = (state.app.activeElement || state.app.activeElement === 0) ? state.app.results[state.app.activeElement] : null
+
     return {
         map: state.map.map,
-        tileLayer: state.map.tileLayer
+        tileLayer: state.map.tileLayer,
+        data
     }
 }
 

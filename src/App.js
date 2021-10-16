@@ -80,17 +80,9 @@ class App extends Component {
         const {inputText, showErrorMessage} = this.state
         const {loading, results, activeElement} = this.props
 
-        let mapData = null
-
-        if (activeElement || activeElement === 0) {
-            mapData = results[activeElement]
-        }
-
         return (
             <div className = 'App'>
-                <Map 
-                    data = {mapData}
-                />
+                <Map />
 
                 <Widget
                     inputText = {inputText}
