@@ -1,122 +1,150 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {fetchNominatim, clear, setActiveElement} from './redux/actions/app'
+import React, {useState, useRef, useReducer} from 'react'
+// import {fetchNominatim, clear, setActiveElement} from './redux/actions/app'
+import {
+    FETCH_NOMINATIM_START,
+    FETCH_NOMINATIM_FINISH,
+    FETCH_NOMINATIM_ERROR,
+    ACTIVE_ELEMENT,
+    CLEAR
+} from './redux/actions/actionTypes'
 import './App.css'
 import Map from './components/Map/Map'
 import Widget from './components/Widget/Widget'
 import axios from 'axios'
+import {Context} from './context'
+import reducer from './redux/reducers/reducer'
 
-class App extends Component {
-    state = {
-        inputText: '',
-        inputValid: false,
-        showErrorMessage: false
+const baseURL = 'https://cors-anywhere.herokuapp.com/https://nominatim.openstreetmaps.org'
+
+function App() {
+    const [inputText, setInputText] = useState('')
+    const [inputValid, setInputValid] = useState(false)
+    const [showErrorMessage, setShowErrorMessage] = useState(false)
+
+    const lastSearch = useRef('')
+
+    const reducerInitialState = {
+        loading: false,
+        results: null,
+        activeElement: null,
+        cancelTokenSource: null
     }
 
-    changeHandler = event => {
-        const inputText = event.target.value
+    const [state, dispatch] = useReducer(reducer, reducerInitialState)
 
-        this.setState({
-            inputText,
-            inputValid: !!inputText.trim(),
-            showErrorMessage: false
-        })
+    const inputHandler = event => {
+        const text = event.target.value
+
+        setInputText(text)
+        setInputValid(!!text.trim())
+        setShowErrorMessage(false)
     }
 
-    searchHandler = async event => {
+    const searchHandler = async event => {
         event.preventDefault()
 
-        if (!this.state.inputValid) {
-            this.setState({showErrorMessage: true})
-
+        if (!inputValid) {
+            setShowErrorMessage(true)
             return
         }
 
-        const {inputText} = this.state
-        const {lastSearch} = this.props
-        if (inputText === lastSearch) return
+        if (lastSearch.current === inputText) return
 
+        lastSearch.current = inputText
 
-        if (this.props.cancelTokenSource) {
-            this.props.cancelTokenSource.cancel()
+        if (state.cancelTokenSource) {
+            state.cancelTokenSource.cancel()
             console.log('aborted')
         }
 
-        const cancelTokenSource = axios.CancelToken.source()
-
-        this.props.nominatim(inputText, cancelTokenSource)
-    }
-
-    clearHandler = event => {
-        event.preventDefault()
-
-        if (this.props.cancelTokenSource) {
-            this.props.cancelTokenSource.cancel()
-            console.log('aborted')
-        }
-
-        this.setState({
-            inputText: '',
-            inputValid: false,
-            showErrorMessage: false,
-        })
-
-        this.props.clear()
-    }
-
-    submitHandler = event => {
-        event.preventDefault()
-
-        this.searchHandler(event)
-    }
-
-    itemClickHandler = id => {
-        // console.log(this.state.results[id])
+        const cancelToken = axios.CancelToken.source()
         
-        this.props.setActiveElement(id)
+        //
+        dispatch({
+            type: FETCH_NOMINATIM_START,
+            payload: inputText,
+            token: cancelToken
+        })
+        //
+        try {
+            const response = await axios.get(baseURL, {
+                params: {
+                    q: inputText,
+                    polygon_geojson: 1,
+                    limit: 30,
+                    format: 'json'
+                },
+                cancelToken: cancelToken.token
+            })
+
+            dispatch({
+                type: FETCH_NOMINATIM_FINISH,
+                payload: response.data
+            })
+
+        } catch(error) {
+            console.log(error)
+
+            dispatch({
+                type: FETCH_NOMINATIM_ERROR
+            })
+        }
     }
 
-    render() {
-        const {inputText, showErrorMessage} = this.state
-        const {loading, results, activeElement} = this.props
+    const clearHandler = event => {
+        event.preventDefault()
 
-        return (
+        if (state.cancelTokenSource) {
+            state.cancelTokenSource.cancel()
+            console.log('aborted')
+        }
+
+        setInputText('')
+        setInputValid(false)
+        setShowErrorMessage(false)
+
+        lastSearch.current = ''
+
+        //
+        dispatch({
+            type: CLEAR
+        })
+    }
+
+    const submitHandler = event => {
+        event.preventDefault()
+        
+        searchHandler(event)
+    }
+
+    const itemClickHandler = id => {
+        //
+        dispatch({
+            type: ACTIVE_ELEMENT,
+            payload: id
+        })
+    }
+
+    return (
+        <Context.Provider value = {{
+            inputText,
+            showErrorMessage,
+            loading: state.loading,
+            results: state.results,
+            activeElement: state.activeElement,
+
+            inputHandler,
+            searchHandler,
+            clearHandler,
+            submitHandler,
+            itemClickHandler
+        }}>
             <div className = 'App'>
                 <Map />
-
-                <Widget
-                    inputText = {inputText}
-                    showErrorMessage = {showErrorMessage}
-                    loading = {loading}
-                    results = {results}
-                    activeElement = {activeElement}
-                    onChange = {this.changeHandler}
-                    onSearch = {this.searchHandler}
-                    onClear = {this.clearHandler}
-                    onSubmit = {this.submitHandler}
-                    onItemClick = {this.itemClickHandler}
-                />
+                <Widget />
             </div>
-        )
-    }
+        </Context.Provider>
+    )
 }
 
-function mapStateToProps(state) {
-    return {
-        lastSearch: state.app.lastSearch,
-        loading: state.app.loading,
-        results: state.app.results,
-        activeElement: state.app.activeElement,
-        cancelTokenSource: state.app.cancelTokenSource
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        nominatim: (text, token) => dispatch(fetchNominatim(text, token)),
-        clear: () => dispatch(clear()),
-        setActiveElement: id => dispatch(setActiveElement(id))
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default App

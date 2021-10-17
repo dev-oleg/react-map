@@ -9,9 +9,12 @@ import axios from 'axios'
 
 const baseURL = 'https://cors-anywhere.herokuapp.com/https://nominatim.openstreetmaps.org'
 
-export function fetchNominatim(text, token) {
+// export function fetchNominatim(text, token) {
+export function fetchNominatim(text) {
+    console.log('fetchNominatim')
     return async dispatch => {
-        dispatch(fetchNominatimStart(text, token))
+        // dispatch(fetchNominatimStart(text, token))
+        dispatch(fetchNominatimStart(text))
 
         try {
             const response = await axios.get(baseURL, {
@@ -21,8 +24,10 @@ export function fetchNominatim(text, token) {
                     limit: 30,
                     format: 'json'
                 },
-                cancelToken: token.token
+                // cancelToken: token.token
             })
+
+            console.log(response.data)
 
             dispatch(fetchNominatimFinish(response.data, null))
         } catch(error) {
@@ -33,6 +38,7 @@ export function fetchNominatim(text, token) {
 }
 
 export function fetchNominatimStart(text, token) {
+    console.log('fetchNominatimStart')
     return {
         type: FETCH_NOMINATIM_START,
         payload: text,
@@ -41,6 +47,7 @@ export function fetchNominatimStart(text, token) {
 }
 
 export function fetchNominatimFinish(data, error) {
+    console.log('fetchNominatimFinish')
     return {
         type: FETCH_NOMINATIM_FINISH,
         payload: data

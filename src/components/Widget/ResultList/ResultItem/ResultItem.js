@@ -1,7 +1,10 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import {ListGroupItem} from 'reactstrap'
+import {Context} from '../../../../context'
 
 const ResultItem = props => {
+    const {itemClickHandler} = useContext(Context)
+
     const cls = []
 
     if (props.active) {
@@ -11,7 +14,7 @@ const ResultItem = props => {
     return (
         <ListGroupItem
             className = {cls.join('')}
-            onClick = {() => props.onItemClick(props.id)}
+            onClick = {() => itemClickHandler(props.id)}
         >
             {props.result.display_name}
         </ListGroupItem>

@@ -1,46 +1,41 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {setMap} from '../../redux/actions/map'
+import React, {useEffect, useRef, useContext} from 'react'
 import './Map.css'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import {config} from './map.config'
 import {clearLayers, addLayer, setView, autoZoom} from './map.functions'
+import {Context} from '../../context'
 
 L.Icon.Default.imagePath = 'assets/'
 
-class Map extends Component {
-    componentDidMount() {
-        if (this.props.map) return
+function Map() {
+    const mapSave = useRef(null)
+    const tileLayerSave = useRef(null)
 
+    const {results, activeElement} = useContext(Context)
+
+    useEffect(() => {
         const map = L.map(config.id, config.params)
-        const tileLayer = L.tileLayer(config.tileLayer.uri).addTo(map)
+        const tileLayer = L.tileLayer(config.tileLayer.uri)
 
-        this.props.setMap({map, tileLayer})
-    }
+        mapSave.current = map
+        tileLayerSave.current = tileLayer
 
-    shouldComponentUpdate(nextProps) {
-        if (!nextProps.data && !this.props.data) {
-            return false
+        tileLayer.addTo(map)
+    }, [])
+
+    useEffect(() => {
+        let data = null
+
+        if (activeElement || activeElement === 0) {
+            data = results[activeElement]
         }
 
-        if (nextProps.data === this.props.data) {
-            return false
-        }
+        clearLayers(mapSave.current, tileLayerSave.current)
 
-        return true
-    }
-    
-    componentDidUpdate() {
-        const {map, tileLayer} = this.props
+        if (!data) return
 
-        clearLayers(map, tileLayer)
-
-        if (!this.props.data) {
-            return
-        }
-
-        const {geojson, lat, lon} = this.props.data
+        const {geojson, lat, lon} = data
 
         const geojsonFeature = {
             "type": "Feature",
@@ -53,34 +48,16 @@ class Map extends Component {
         const {
             _northEast: northEast,
             _southWest: southWest
-        } = addLayer(map, geojsonFeature)
+        } = addLayer(mapSave.current, geojsonFeature)
 
-        setView(map, lat, lon)
+        setView(mapSave.current, lat, lon)
 
-        autoZoom(map, northEast, southWest)
-    }
+        autoZoom(mapSave.current, northEast, southWest)
+    }, [results, activeElement])
 
-    render() {
-        return (
-            <div id = 'map'></div>
-        )
-    }
+    return (
+        <div id = 'map'></div>
+    )
 }
 
-function mapStateToProps(state) {
-    const data = (state.app.activeElement || state.app.activeElement === 0) ? state.app.results[state.app.activeElement] : null
-
-    return {
-        map: state.map.map,
-        tileLayer: state.map.tileLayer,
-        data
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        setMap: (map, tileLayer) => dispatch(setMap(map, tileLayer))
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Map)
+export default Map

@@ -1,27 +1,38 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import './Widget.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import {Form, FormGroup, Input, Label, FormFeedback, Button, ButtonGroup} from 'reactstrap'
 import Empty from './Empty/Empty'
 import Loader from './Loader/Loader'
 import ResultList from './ResultList/ResultList'
+import {Context} from '../../context'
 
-const Widget = props => {
+const Widget = () => {
+    const {
+        inputText,
+        showErrorMessage,
+        loading,
+        inputHandler,
+        searchHandler,
+        clearHandler,
+        submitHandler
+    } = useContext(Context)
+
     return (
         <div className = 'Widget'>
-            <Form onSubmit = {props.onSubmit}>
+            <Form onSubmit = {submitHandler}>
                 <FormGroup>
                     <Label for = 'searchInput'>Поиск</Label>
 
                     <Input
                         id = 'searchInput'
-                        value = {props.inputText}
-                        onChange = {props.onChange}
-                        invalid = {props.showErrorMessage}
+                        value = {inputText}
+                        onChange = {inputHandler}
+                        invalid = {showErrorMessage}
                     />
 
                     {
-                        props.showErrorMessage ?
+                        showErrorMessage ?
                             <FormFeedback>Поле не должно быть пустым</FormFeedback> :
                             <Empty />
                     }
@@ -32,7 +43,7 @@ const Widget = props => {
                         color = 'primary'
                         outline = {true}
                         size = 'lg'
-                        onClick = {props.onSearch}
+                        onClick = {searchHandler}
                     >
                         Поиск
                     </Button>
@@ -41,7 +52,7 @@ const Widget = props => {
                         color = 'secondary'                            
                         outline = {true}
                         size = 'lg'
-                        onClick = {props.onClear}
+                        onClick = {clearHandler}
                     >
                         Очистить
                     </Button>
@@ -50,15 +61,7 @@ const Widget = props => {
 
             <p>Результаты</p>
 
-            {
-                props.loading ?
-                    <Loader /> :
-                    <ResultList
-                        results = {props.results}
-                        activeElement = {props.activeElement}
-                        onItemClick = {props.onItemClick}
-                    />
-            }
+            {loading ? <Loader /> : <ResultList />}
         </div>
     )
 }
