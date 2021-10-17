@@ -1,20 +1,20 @@
 import React, {useState, useRef, useReducer} from 'react'
-// import {fetchNominatim, clear, setActiveElement} from './redux/actions/app'
-import {
-    FETCH_NOMINATIM_START,
-    FETCH_NOMINATIM_FINISH,
-    FETCH_NOMINATIM_ERROR,
-    ACTIVE_ELEMENT,
-    CLEAR
-} from './redux/actions/actionTypes'
+import {clearAction, setActiveElementAction} from './redux/actions/app'
 import './App.css'
 import Map from './components/Map/Map'
 import Widget from './components/Widget/Widget'
 import axios from 'axios'
 import {Context} from './context'
 import reducer from './redux/reducers/reducer'
+import {
+    FETCH_NOMINATIM_START,
+    FETCH_NOMINATIM_FINISH,
+    FETCH_NOMINATIM_ERROR
+} from './redux/actions/actionTypes'
 
 const baseURL = 'https://cors-anywhere.herokuapp.com/https://nominatim.openstreetmaps.org'
+
+
 
 function App() {
     const [inputText, setInputText] = useState('')
@@ -59,13 +59,12 @@ function App() {
 
         const cancelToken = axios.CancelToken.source()
         
-        //
         dispatch({
             type: FETCH_NOMINATIM_START,
             payload: inputText,
             token: cancelToken
         })
-        //
+        
         try {
             const response = await axios.get(baseURL, {
                 params: {
@@ -105,10 +104,7 @@ function App() {
 
         lastSearch.current = ''
 
-        //
-        dispatch({
-            type: CLEAR
-        })
+        dispatch(clearAction())
     }
 
     const submitHandler = event => {
@@ -118,11 +114,7 @@ function App() {
     }
 
     const itemClickHandler = id => {
-        //
-        dispatch({
-            type: ACTIVE_ELEMENT,
-            payload: id
-        })
+        dispatch(setActiveElementAction(id))
     }
 
     return (

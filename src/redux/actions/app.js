@@ -9,12 +9,12 @@ import axios from 'axios'
 
 const baseURL = 'https://cors-anywhere.herokuapp.com/https://nominatim.openstreetmaps.org'
 
-// export function fetchNominatim(text, token) {
-export function fetchNominatim(text) {
-    console.log('fetchNominatim')
+export async function fetchNominatim(text, token) {
+    console.log(`fetchNominatim - text: ${text}, token: ${token}`)
+    // dispatch(fetchNominatimStart(text, token))
+
     return async dispatch => {
-        // dispatch(fetchNominatimStart(text, token))
-        dispatch(fetchNominatimStart(text))
+        dispatch(fetchNominatimStart(text, token))
 
         try {
             const response = await axios.get(baseURL, {
@@ -24,7 +24,7 @@ export function fetchNominatim(text) {
                     limit: 30,
                     format: 'json'
                 },
-                // cancelToken: token.token
+                cancelToken: token.token
             })
 
             console.log(response.data)
@@ -39,6 +39,7 @@ export function fetchNominatim(text) {
 
 export function fetchNominatimStart(text, token) {
     console.log('fetchNominatimStart')
+    
     return {
         type: FETCH_NOMINATIM_START,
         payload: text,
@@ -48,19 +49,22 @@ export function fetchNominatimStart(text, token) {
 
 export function fetchNominatimFinish(data, error) {
     console.log('fetchNominatimFinish')
+
+    if (error) console.log(error)
+
     return {
         type: FETCH_NOMINATIM_FINISH,
         payload: data
     }
 }
 
-export function clear() {
+export function clearAction() {
     return {
         type: CLEAR
     }
 }
 
-export function setActiveElement(id) {
+export function setActiveElementAction(id) {
     return {
         type: ACTIVE_ELEMENT,
         payload: id
