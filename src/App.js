@@ -1,18 +1,17 @@
 import React, {useState, useRef, useReducer} from 'react'
-import {clearAction, setActiveElementAction} from './redux/actions/app'
+import {dispatchMiddleware} from './redux/reducers/dispatchMiddleware'
+import {reducer} from './redux/reducers/reducer'
+import {
+    fetchNominatimInit,
+    fetchNominatim,
+    clearAction,
+    setActiveElementAction
+} from './redux/actions/actionCreator'
+import {Context} from './context'
 import './App.css'
 import Map from './components/Map/Map'
 import Widget from './components/Widget/Widget'
 import axios from 'axios'
-import {Context} from './context'
-import reducer from './redux/reducers/reducer'
-import {
-    FETCH_NOMINATIM_START,
-    FETCH_NOMINATIM_FINISH,
-    FETCH_NOMINATIM_ERROR
-} from './redux/actions/actionTypes'
-
-const baseURL = 'https://cors-anywhere.herokuapp.com/https://nominatim.openstreetmaps.org'
 
 
 
@@ -30,7 +29,8 @@ function App() {
         cancelTokenSource: null
     }
 
-    const [state, dispatch] = useReducer(reducer, reducerInitialState)
+    const [state, dispatchBase] = useReducer(reducer, reducerInitialState)
+    const dispatch = dispatchMiddleware(dispatchBase)
 
     const inputHandler = event => {
         const text = event.target.value
@@ -40,7 +40,7 @@ function App() {
         setShowErrorMessage(false)
     }
 
-    const searchHandler = async event => {
+    const searchHandler = event => {
         event.preventDefault()
 
         if (!inputValid) {
@@ -59,35 +59,8 @@ function App() {
 
         const cancelToken = axios.CancelToken.source()
         
-        dispatch({
-            type: FETCH_NOMINATIM_START,
-            payload: inputText,
-            token: cancelToken
-        })
-        
-        try {
-            const response = await axios.get(baseURL, {
-                params: {
-                    q: inputText,
-                    polygon_geojson: 1,
-                    limit: 30,
-                    format: 'json'
-                },
-                cancelToken: cancelToken.token
-            })
-
-            dispatch({
-                type: FETCH_NOMINATIM_FINISH,
-                payload: response.data
-            })
-
-        } catch(error) {
-            console.log(error)
-
-            dispatch({
-                type: FETCH_NOMINATIM_ERROR
-            })
-        }
+        dispatch(fetchNominatimInit(cancelToken))
+        dispatch(fetchNominatim(inputText, cancelToken))
     }
 
     const clearHandler = event => {

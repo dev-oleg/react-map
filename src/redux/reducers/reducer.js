@@ -1,21 +1,21 @@
 import {
-    FETCH_NOMINATIM_START,
-    FETCH_NOMINATIM_FINISH,
+    FETCH_NOMINATIM_INIT,
+    FETCH_NOMINATIM_SUCCESS,
     FETCH_NOMINATIM_ERROR,
     CLEAR,
     ACTIVE_ELEMENT
 } from '../actions/actionTypes'
 
-export default function(state, action) {
+export function reducer(state, action) {
     switch (action.type) {
-        case FETCH_NOMINATIM_START:
+        case FETCH_NOMINATIM_INIT:
             return {
                 ...state,
                 loading: true,
                 activeElement: null,
                 cancelTokenSource: action.token
             }
-        case FETCH_NOMINATIM_FINISH:
+        case FETCH_NOMINATIM_SUCCESS:
             return {
                 ...state,
                 loading: false,
