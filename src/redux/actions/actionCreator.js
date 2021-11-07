@@ -1,17 +1,35 @@
 import {
-    FETCH_NOMINATIM,
     FETCH_NOMINATIM_INIT,
     FETCH_NOMINATIM_SUCCESS,
-    FETCH_NOMINATIM_ERROR,
     CLEAR,
     ACTIVE_ELEMENT
 } from './actionTypes'
 
+import axios from 'axios'
+
+
+
+const baseURL = 'https://cors-anywhere.herokuapp.com/https://nominatim.openstreetmaps.org'
+
 export function fetchNominatim(text, token) {
-    return {
-        type: FETCH_NOMINATIM,
-        text,
-        token
+    return async (dispatch) => {
+        dispatch(fetchNominatimInit(token))
+
+        try {
+            const response = await axios.get(baseURL, {
+                params: {
+                    q: text,
+                    polygon_geojson: 1,
+                    limit: 30,
+                    format: 'json'
+                },
+                cancelToken: token.token
+            })
+
+            dispatch(fetchNominatimSuccess(response.data))
+        } catch(error) {
+            console.log(error)
+        }
     }
 }
 
@@ -26,14 +44,6 @@ export function fetchNominatimSuccess(data) {
     return {
         type: FETCH_NOMINATIM_SUCCESS,
         payload: data
-    }
-}
-
-export function fetchNominatimError(error) {
-    console.log(error)
-
-    return {
-        type: FETCH_NOMINATIM_ERROR
     }
 }
 

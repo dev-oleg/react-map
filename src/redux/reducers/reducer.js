@@ -1,12 +1,18 @@
 import {
     FETCH_NOMINATIM_INIT,
     FETCH_NOMINATIM_SUCCESS,
-    FETCH_NOMINATIM_ERROR,
     CLEAR,
     ACTIVE_ELEMENT
 } from '../actions/actionTypes'
 
-export function reducer(state, action) {
+const initialState = {
+    loading: false,
+    results: null,
+    activeElement: null,
+    cancelTokenSource: null
+}
+
+export function reducer(state = initialState, action) {
     switch (action.type) {
         case FETCH_NOMINATIM_INIT:
             return {
@@ -20,12 +26,6 @@ export function reducer(state, action) {
                 ...state,
                 loading: false,
                 results: action.payload,
-                cancelTokenSource: null
-            }
-        case FETCH_NOMINATIM_ERROR:
-            return {
-                ...state,
-                loading: false,
                 cancelTokenSource: null
             }
         case CLEAR:

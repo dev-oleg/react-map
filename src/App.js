@@ -1,8 +1,6 @@
-import React, {useState, useRef, useReducer} from 'react'
-import {dispatchMiddleware} from './redux/reducers/dispatchMiddleware'
-import {reducer} from './redux/reducers/reducer'
+import React, {useState, useRef} from 'react'
+import {useSelector, useDispatch} from 'react-redux'
 import {
-    fetchNominatimInit,
     fetchNominatim,
     clearAction,
     setActiveElementAction
@@ -16,21 +14,20 @@ import axios from 'axios'
 
 
 function App() {
+    const loading = useSelector(state => state.loading)
+    const results = useSelector(state => state.results)
+    const activeElement = useSelector(state => state.activeElement)
+    const cancelTokenSource = useSelector(state => state.cancelTokenSource)
+
+    const dispatch = useDispatch()
+
     const [inputText, setInputText] = useState('')
     const [inputValid, setInputValid] = useState(false)
     const [showErrorMessage, setShowErrorMessage] = useState(false)
 
     const lastSearch = useRef('')
 
-    const reducerInitialState = {
-        loading: false,
-        results: null,
-        activeElement: null,
-        cancelTokenSource: null
-    }
 
-    const [state, dispatchBase] = useReducer(reducer, reducerInitialState)
-    const dispatch = dispatchMiddleware(dispatchBase)
 
     const inputHandler = event => {
         const text = event.target.value
@@ -51,23 +48,22 @@ function App() {
         if (lastSearch.current === inputText) return
 
         lastSearch.current = inputText
-
-        if (state.cancelTokenSource) {
-            state.cancelTokenSource.cancel()
+        
+        if (cancelTokenSource) {
+            cancelTokenSource.cancel()
             console.log('aborted')
         }
 
         const cancelToken = axios.CancelToken.source()
         
-        dispatch(fetchNominatimInit(cancelToken))
         dispatch(fetchNominatim(inputText, cancelToken))
     }
 
     const clearHandler = event => {
         event.preventDefault()
 
-        if (state.cancelTokenSource) {
-            state.cancelTokenSource.cancel()
+        if (cancelTokenSource) {
+            cancelTokenSource.cancel()
             console.log('aborted')
         }
 
@@ -94,9 +90,9 @@ function App() {
         <Context.Provider value = {{
             inputText,
             showErrorMessage,
-            loading: state.loading,
-            results: state.results,
-            activeElement: state.activeElement,
+            loading,
+            results,
+            activeElement,
 
             inputHandler,
             searchHandler,
