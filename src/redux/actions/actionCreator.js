@@ -26,7 +26,16 @@ export function fetchNominatim(text, token) {
                 cancelToken: token.token
             })
 
-            dispatch(fetchNominatimSuccess(response.data))
+            const data = response.data.map((item) => {
+                return {
+                    name: item.display_name,
+                    geojson: item.geojson,
+                    lat: item.lat,
+                    lon: item.lon
+                }
+            })
+
+            dispatch(fetchNominatimSuccess(data))
         } catch(error) {
             console.log(error)
         }
