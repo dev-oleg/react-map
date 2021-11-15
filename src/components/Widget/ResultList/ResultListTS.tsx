@@ -3,8 +3,9 @@ import './ResultList.css'
 import {ListGroup} from 'reactstrap'
 import ResultItem from './ResultItem/ResultItemTS'
 import {Context} from '../../../context'
+import {IResult} from '../../../types'
 
-const ResultList = () => {
+const ResultList: React.FC = () => {
     const {results, activeElement} = useContext(Context)
 
     return (
@@ -12,7 +13,7 @@ const ResultList = () => {
             <ListGroup>
                 {
                     results ? 
-                        results.map((item, index) => {
+                        results.map((item: IResult, index: number) => { //
                             return (
                                 <ResultItem
                                     key = {index}

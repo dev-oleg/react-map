@@ -2,18 +2,18 @@ import React, {useContext} from 'react'
 import {ListGroupItem} from 'reactstrap'
 import {Context} from '../../../../context'
 
-const ResultItem = ({active, id, name}) => {
+type ResultItemProps = {
+    active: boolean,
+    id: number,
+    name: string
+}
+
+const ResultItem: React.FC<ResultItemProps> = ({active, id, name}) => {
     const {itemClickHandler} = useContext(Context)
-
-    const cls = []
-
-    if (active) {
-        cls.push('active')
-    }
-
+    
     return (
         <ListGroupItem
-            className = {cls.join('')}
+            className = {active ? 'active' : ''}
             onClick = {() => itemClickHandler(id)}
         >
             {name}
