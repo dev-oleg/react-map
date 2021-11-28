@@ -1,34 +1,32 @@
-import {
-    FETCH_NOMINATIM_INIT,
-    FETCH_NOMINATIM_SUCCESS,
-    CLEAR,
-    ACTIVE_ELEMENT
-} from '../actions/actionTypes'
+import { IState, Action } from './types'
+import { actionTypes } from './actionTypes'
 
-const initialState = {
+
+
+const initialState: IState = {
     loading: false,
     results: null,
     activeElement: null,
     cancelTokenSource: null
 }
 
-export function reducer(state = initialState, action) {
+const reducer = (state: IState = initialState, action: Action) => {
     switch (action.type) {
-        case FETCH_NOMINATIM_INIT:
+        case actionTypes.FETCH_NOMINATIM_INIT:
             return {
                 ...state,
                 loading: true,
                 activeElement: null,
                 cancelTokenSource: action.token
             }
-        case FETCH_NOMINATIM_SUCCESS:
+        case actionTypes.FETCH_NOMINATIM_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 results: action.payload,
                 cancelTokenSource: null
             }
-        case CLEAR:
+        case actionTypes.CLEAR:
             return {
                 ...state,
                 loading: false,
@@ -36,7 +34,7 @@ export function reducer(state = initialState, action) {
                 activeElement: null,
                 cancelTokenSource: null
             }
-        case ACTIVE_ELEMENT:
+        case actionTypes.ACTIVE_ELEMENT:
             return {
                 ...state,
                 activeElement: state.activeElement === action.payload ? null : action.payload
@@ -45,3 +43,6 @@ export function reducer(state = initialState, action) {
             return state
     }
 }
+
+export default reducer
+export type State = ReturnType<typeof reducer>

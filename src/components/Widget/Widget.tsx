@@ -1,11 +1,11 @@
-import React, {useContext} from 'react'
+import React, { useContext } from 'react'
 import './Widget.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import {Form, FormGroup, Input, Label, FormFeedback, Button, ButtonGroup} from 'reactstrap'
+import { Form, FormGroup, Input, Label, FormFeedback, Button, ButtonGroup } from 'reactstrap'
 import Empty from './Empty/Empty'
 import Loader from './Loader/Loader'
-import ResultList from './ResultList/ResultListTS'
-import {Context} from '../../context'
+import ResultList from './ResultList/ResultList'
+import { Context } from '../../context'
 
 const Widget: React.FC = () => {
     const {

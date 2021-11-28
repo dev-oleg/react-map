@@ -1,4 +1,5 @@
-import {CancelTokenSource} from 'axios'
+import { CancelTokenSource } from 'axios'
+import { actionTypes } from './actionTypes'
 
 export type TCoordinate = [number, number]
 export type TCoordinates = TCoordinate | TCoordinate[]
@@ -17,7 +18,7 @@ export type TResults = IResult[] | IResult | null
 export type TActiveElement = number | null
 export type TCancelTokenSource = CancelTokenSource | null
 
-export interface IRootState {
+export interface IState {
     loading: boolean
     results: TResults
     activeElement: TActiveElement
@@ -25,25 +26,25 @@ export interface IRootState {
 }
 
 export interface IFetchNominatimInit {
-    type: string
+    type: actionTypes.FETCH_NOMINATIM_INIT
     token: CancelTokenSource
 }
 
 export interface IFetchNominatimSuccess {
-    type: string
+    type: actionTypes.FETCH_NOMINATIM_SUCCESS
     payload: TResults
 }
 
 export interface IClearAction {
-    type: string
+    type: actionTypes.CLEAR
 }
 
 export interface ISetActiveElementAction {
-    type: string
+    type: actionTypes.ACTIVE_ELEMENT
     payload: number
 }
 
-export type Action =
+export type Action = 
     | IFetchNominatimInit
     | IFetchNominatimSuccess
     | IClearAction

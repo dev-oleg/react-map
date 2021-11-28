@@ -1,6 +1,6 @@
-import React, {useContext} from 'react'
-import {ListGroupItem} from 'reactstrap'
-import {Context} from '../../../../context'
+import React, { useContext } from 'react'
+import { ListGroupItem } from 'reactstrap'
+import { Context } from '../../../../context'
 
 type ResultItemProps = {
     active: boolean,

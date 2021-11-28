@@ -1,10 +1,10 @@
-import React, {useEffect, useRef, useContext} from 'react'
+import React, { useEffect, useRef, useContext } from 'react'
 import './Map.css'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import {config} from './map.config'
-import {clearLayers, addLayer, setView, autoZoom} from './map.functions'
-import {Context} from '../../context'
+import { config } from './map.config'
+import { clearLayers, addLayer, setView, autoZoom } from './map.functions'
+import { Context } from '../../context'
 
 L.Icon.Default.imagePath = 'assets/'
 

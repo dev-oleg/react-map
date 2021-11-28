@@ -1,7 +1,7 @@
 import React from 'react'
-import {Spinner} from 'reactstrap'
+import { Spinner } from 'reactstrap'
 
-const Loader = () => {
+const Loader: React.FC = () => {
     const divStyle = {
         display: 'flex',
         alignItems: 'center',

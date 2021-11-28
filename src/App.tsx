@@ -1,27 +1,28 @@
-import React, {useState, useRef} from 'react'
-import {useSelector, useDispatch} from 'react-redux'
-import {Dispatch} from 'redux'
-import {
-    fetchNominatim,
-    clearAction,
-    setActiveElementAction
-} from './redux/actions/actionCreator'
-import {Context} from './context'
+import React, { useState, useRef } from 'react'
+import { bindActionCreators } from 'redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { actionCreators, State } from './redux/index'
+import { Context } from './context'
 import './App.css'
 import Map from './components/Map/Map'
-import Widget from './components/Widget/WidgetTS'
-import axios, {CancelTokenSource} from 'axios'
+import Widget from './components/Widget/Widget'
+import axios, { CancelTokenSource } from 'axios'
 
 
 
 const App: React.FC = () => {
-    const loading = useSelector(state => state.loading) //
-    const results = useSelector(state => state.results) //
-    const activeElement = useSelector(state => state.activeElement) //
-    const cancelTokenSource = useSelector(state => state.cancelTokenSource) //
+    const loading = useSelector((state: State) => state.loading)
+    const results = useSelector((state: State) => state.results)
+    const activeElement = useSelector((state: State) => state.activeElement)
+    const cancelTokenSource = useSelector((state: State) => state.cancelTokenSource)
 
     const dispatch = useDispatch()
-    // const dispatch: Dispatch = useDispatch()
+
+    const {
+        fetchNominatim,
+        clearAction,
+        setActiveElementAction
+    } = bindActionCreators(actionCreators, dispatch)
 
     const [inputText, setInputText] = useState<string>('')
     const [inputValid, setInputValid] = useState<boolean>(false)
@@ -58,7 +59,7 @@ const App: React.FC = () => {
 
         const cancelToken: CancelTokenSource = axios.CancelToken.source()
         
-        dispatch(fetchNominatim(inputText, cancelToken))
+        fetchNominatim(inputText, cancelToken)
     }
 
     const clearHandler = (event: React.MouseEvent) => {
@@ -75,7 +76,7 @@ const App: React.FC = () => {
 
         lastSearch.current = ''
 
-        dispatch(clearAction())
+        clearAction()
     }
 
     const submitHandler = (event: React.MouseEvent) => {
@@ -85,7 +86,7 @@ const App: React.FC = () => {
     }
 
     const itemClickHandler = (id: number) => {
-        dispatch(setActiveElementAction(id))
+        setActiveElementAction(id)
     }
 
     return (
