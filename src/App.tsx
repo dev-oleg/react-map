@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { actionCreators, State } from './redux/index'
 import { Context } from './context'
 import './App.css'
+// import LeafletMap from './components/LeafletMap/LeafletMap'
 import Map from './components/Map/Map'
 import Widget from './components/Widget/Widget'
 import axios, { CancelTokenSource } from 'axios'
@@ -40,9 +41,7 @@ const App: React.FC = () => {
         setShowErrorMessage(false)
     }
 
-    const searchHandler = (event: React.MouseEvent) => {
-        event.preventDefault()
-
+    const searchFunction = () => {
         if (!inputValid) {
             setShowErrorMessage(true)
             return
@@ -61,6 +60,18 @@ const App: React.FC = () => {
         
         fetchNominatim(inputText, cancelToken)
     }
+    
+    const searchHandler = (event: React.MouseEvent) => {
+        event.preventDefault()
+
+        searchFunction()
+    }
+
+    const submitHandler = (event: React.FormEvent) => {
+        event.preventDefault()
+        
+        searchFunction()
+    }
 
     const clearHandler = (event: React.MouseEvent) => {
         event.preventDefault()
@@ -77,12 +88,6 @@ const App: React.FC = () => {
         lastSearch.current = ''
 
         clearAction()
-    }
-
-    const submitHandler = (event: React.MouseEvent) => {
-        event.preventDefault()
-        
-        searchHandler(event)
     }
 
     const itemClickHandler = (id: number) => {
@@ -105,6 +110,7 @@ const App: React.FC = () => {
         }}>
             <div className = 'App'>
                 <Map />
+                {/* <LeafletMap /> */}
                 <Widget />
             </div>
         </Context.Provider>

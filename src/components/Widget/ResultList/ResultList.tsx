@@ -3,17 +3,19 @@ import './ResultList.css'
 import { ListGroup } from 'reactstrap'
 import ResultItem from './ResultItem/ResultItem'
 import { Context } from '../../../context'
-import { IResult } from '../../../redux/types'
+import { TResults, TResultArray, IResult } from '../../../redux/types'
 
 const ResultList: React.FC = () => {
     const {results, activeElement} = useContext(Context)
 
+    const resultsData: TResults = results ? results instanceof IResult ? [results] : results : null
+    
     return (
         <div className = 'ResultList'>
             <ListGroup>
                 {
-                    results ? 
-                        results.map((item: IResult, index: number) => {
+                    resultsData ?
+                    resultsData.map((item: IResult, index: number) => {
                             return (
                                 <ResultItem
                                     key = {index}

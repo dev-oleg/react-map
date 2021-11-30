@@ -4,7 +4,7 @@ import { actionTypes } from './actionTypes'
 export type TCoordinate = [number, number]
 export type TCoordinates = TCoordinate | TCoordinate[]
 
-export interface IResult {
+export class IResult {
     name: string
     lat: string
     lon: string
@@ -14,7 +14,9 @@ export interface IResult {
     }
 }
 
-export type TResults = IResult[] | IResult | null
+export type TResultArray = IResult[]
+export type TResults = TResultArray | IResult | null
+// export type TResults = IResult[] | null
 export type TActiveElement = number | null
 export type TCancelTokenSource = CancelTokenSource | null
 
