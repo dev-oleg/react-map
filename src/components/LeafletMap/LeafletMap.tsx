@@ -1,22 +1,24 @@
 import React, { useEffect, useRef, useContext } from 'react'
 import './Map.css'
-import L, { Map } from 'leaflet'
+import L, { Map, Layer, LatLngLiteral } from 'leaflet'
+import { GeoJsonObject } from 'geojson'
 import 'leaflet/dist/leaflet.css'
 import { config } from './map.configTS'
 import { clearLayers, addLayer, setView, autoZoom } from './map.functionsTS'
 import { Context } from '../../context'
+import { IResult } from '../../redux/types'
 
 L.Icon.Default.imagePath = 'assets/'
 
 function LeafletMap() {
     const mapSave = useRef<Map>(null)
-    const tileLayerSave = useRef(null)
+    const tileLayerSave = useRef<Layer>(null)
 
     const {results, activeElement} = useContext(Context)
 
     useEffect(() => {
         const map: Map = L.map(config.id, config.params)
-        const tileLayer = L.tileLayer(config.tileLayer.uri)
+        const tileLayer: Layer = L.tileLayer(config.tileLayer.uri)
 
         mapSave.current = map
         tileLayerSave.current = tileLayer
@@ -25,7 +27,8 @@ function LeafletMap() {
     }, [])
 
     useEffect(() => {
-        let data = null
+        type TData = IResult | null
+        let data: TData = null
 
         if (activeElement || activeElement === 0) {
             data = results[activeElement]
@@ -37,22 +40,38 @@ function LeafletMap() {
 
         const {geojson, lat, lon} = data
 
-        const geojsonFeature = {
-            "type": "Feature",
-            "geometry": {
-                "type": geojson.type,
-                "coordinates": geojson.coordinates
-            }
+        // const geojsonFeature = {
+        //     type: 'Feature',
+        //     geometry: {
+        //         type: geojson.type,
+        //         coordinates: geojson.coordinates
+        //     }
+        // }
+
+        const geojsonFeature: GeoJsonObject = {
+            type: geojson.type,
+            bbox: geojson.coordinates
         }
 
-        const {
-            _northEast: northEast,
-            _southWest: southWest
-        } = addLayer(mapSave.current, geojsonFeature)
+        // const {
+        //     _northEast: northEast,
+        //     _southWest: southWest
+        // } = addLayer(mapSave.current, geojsonFeature)
 
-        setView(mapSave.current, lat, lon)
+        // type Tnesw = {
+        //     _northEast: LatLngLiteral,
+        //     _southWest: LatLngLiteral
+        // }
 
-        autoZoom(mapSave.current, northEast, southWest)
+        const nesw: any = addLayer(mapSave.current, geojsonFeature)
+        // console.log(nesw)
+        
+        // const northEast: LatLngLiteral = nesw._northEast
+        // const southWest: LatLngLiteral = nesw._southWest
+
+        setView(mapSave.current, +lat, +lon)
+
+        // autoZoom(mapSave.current, northEast, southWest)
     }, [results, activeElement])
 
     return (

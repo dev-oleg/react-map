@@ -37,11 +37,19 @@ function Map() {
 
         const {geojson, lat, lon} = data
 
+        // const geojsonFeature = {
+        //     "type": "Feature",
+        //     "geometry": {
+        //         "type": geojson.type,
+        //         "coordinates": geojson.coordinates
+        //     }
+        // }
+
         const geojsonFeature = {
-            "type": "Feature",
-            "geometry": {
-                "type": geojson.type,
-                "coordinates": geojson.coordinates
+            type: 'Feature',
+            geometry: {
+                type: geojson.type,
+                coordinates: geojson.coordinates
             }
         }
 

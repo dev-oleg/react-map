@@ -1,15 +1,16 @@
-import L, { Map, Layer, SVGOverlay, LatLngLiteral } from 'leaflet'
+import L, { Map, Layer, LatLngLiteral, FeatureGroup } from 'leaflet'
+import { GeoJsonObject } from 'geojson'
 
-export function clearLayers(map: Map, tileLayer) {
-    map.eachLayer(layer => {
+export function clearLayers(map: Map, tileLayer: Layer) {
+    map.eachLayer((layer: Layer | FeatureGroup) => {
         if (layer !== tileLayer) {
             map.removeLayer(layer)
         }
     })
 }
 
-export function addLayer(map: Map, geodata) {
-    const layer: Layer = L.geoJSON(geodata)
+export function addLayer(map: Map, geodata: GeoJsonObject) {
+    const layer: FeatureGroup = L.geoJSON(geodata)
     layer.addTo(map)
     return layer.getBounds()
 }
