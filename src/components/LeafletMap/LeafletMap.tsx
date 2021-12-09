@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useContext } from 'react'
 import './Map.css'
-import L, { Map, Layer, LatLngLiteral } from 'leaflet'
+import L, { Map, Layer, TileLayer, LatLngLiteral } from 'leaflet'
 import { GeoJsonObject } from 'geojson'
 import 'leaflet/dist/leaflet.css'
 import { config } from './map.configTS'
@@ -12,13 +12,13 @@ L.Icon.Default.imagePath = 'assets/'
 
 function LeafletMap() {
     const mapSave = useRef<Map>(null)
-    const tileLayerSave = useRef<Layer>(null)
+    const tileLayerSave = useRef<TileLayer>(null)
 
     const {results, activeElement} = useContext(Context)
 
     useEffect(() => {
         const map: Map = L.map(config.id, config.params)
-        const tileLayer: Layer = L.tileLayer(config.tileLayer.uri)
+        const tileLayer: TileLayer = L.tileLayer(config.tileLayer.uri)
 
         mapSave.current = map
         tileLayerSave.current = tileLayer

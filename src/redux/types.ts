@@ -3,7 +3,6 @@ import { actionTypes } from './actionTypes'
 import { GeoJsonObject, BBox } from 'geojson'
 
 export type TCoordinate = [number, number]
-// export type TCoordinates = TCoordinate | TCoordinate[]
 
 export class IResult {
     name: string
@@ -15,8 +14,7 @@ export class IResult {
     }
 }
 
-export type TResultArray = IResult[]
-export type TResults = TResultArray | IResult | null
+export type TResults = IResult[] | null
 export type TActiveElement = number | null
 export type TCancelTokenSource = CancelTokenSource | null
 

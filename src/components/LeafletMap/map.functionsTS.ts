@@ -1,8 +1,8 @@
-import L, { Map, Layer, LatLngLiteral, FeatureGroup } from 'leaflet'
+import L, { Map, Layer, TileLayer, LatLngLiteral, FeatureGroup } from 'leaflet'
 import { GeoJsonObject } from 'geojson'
 
-export function clearLayers(map: Map, tileLayer: Layer) {
-    map.eachLayer((layer: Layer | FeatureGroup) => {
+export function clearLayers(map: Map, tileLayer: TileLayer) {
+    map.eachLayer((layer: Layer) => {
         if (layer !== tileLayer) {
             map.removeLayer(layer)
         }

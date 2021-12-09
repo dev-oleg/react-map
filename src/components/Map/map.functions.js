@@ -17,9 +17,6 @@ export function setView(map, lat, lon) {
 }
 
 export function autoZoom(map, ne, sw) {
-    // console.log(`autoZoom ne: ${ne} sw: ${sw} map: ${map}`);
-    // console.log(`autoZoom ne: ${ne} typeof ne: ${typeof ne}`);
-    // console.log(ne);
     map.fitBounds([
         [ne.lat, ne.lng],
         [sw.lat, sw.lng]

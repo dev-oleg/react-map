@@ -37,14 +37,6 @@ function Map() {
 
         const {geojson, lat, lon} = data
 
-        // const geojsonFeature = {
-        //     "type": "Feature",
-        //     "geometry": {
-        //         "type": geojson.type,
-        //         "coordinates": geojson.coordinates
-        //     }
-        // }
-
         const geojsonFeature = {
             type: 'Feature',
             geometry: {
@@ -52,6 +44,8 @@ function Map() {
                 coordinates: geojson.coordinates
             }
         }
+
+        // console.log(L.GeoJSON.coordsToLatLng(geojsonFeature.geometry.coordinates))
 
         const {
             _northEast: northEast,
